@@ -156,12 +156,49 @@ export class GoogleAddressAutocomplete
 
         const streetNumber = this.getAddressComponent(place, "street_number");
         const route = this.getAddressComponent(place, "route");
+        // Additional street-line parts Google may return beyond the street name.
+        const subpremise = this.getAddressComponent(place, "subpremise"); // unit/apt/suite
+        const premise = this.getAddressComponent(place, "premise"); // building name/number
+        const neighborhood = this.getAddressComponent(place, "neighborhood");
+        const sublocality =
+          this.getAddressComponent(place, "sublocality") ||
+          this.getAddressComponent(place, "sublocality_level_1");
+
         // Expose the house/street number as its own bound output so it can be
         // mapped to a dedicated D365 field.
         this._context.parameters.houseNumber.raw = streetNumber;
-        // Street now holds only the street name (route); the number is exposed
+        // Street 1 holds only the street name (route); the number is exposed
         // separately via houseNumber above.
         this._context.parameters.street.raw = route.trim();
+        // Street 2: unit / apartment / suite.
+        this._context.parameters.street2.raw = subpremise;
+        // Street 3: remaining street descriptors (building, neighborhood, area).
+        const street3 = [premise, neighborhood, sublocality]
+          .filter((part) => part && part.length > 0)
+          .join(", ");
+        this._context.parameters.street3.raw = street3;
+
+        // Combined single-field street line for makers who prefer one field:
+        // "<houseNumber> <street>, <street2>, <street3>" (empty parts omitted).
+        const streetLine1 = [streetNumber, route.trim()]
+          .filter((part) => part && part.length > 0)
+          .join(" ");
+        this._context.parameters.streetCombined.raw = [
+          streetLine1,
+          subpremise,
+          street3,
+        ]
+          .filter((part) => part && part.length > 0)
+          .join(", ");
+
+        // Same combined line but WITHOUT the house number (street name first).
+        this._context.parameters.streetCombinedNoNumber.raw = [
+          route.trim(),
+          subpremise,
+          street3,
+        ]
+          .filter((part) => part && part.length > 0)
+          .join(", ");
 
         this._context.parameters.city.raw =
           this.getAddressComponent(place, "locality") ||
@@ -250,6 +287,11 @@ export class GoogleAddressAutocomplete
       address: this._value,
       houseNumber: this._context.parameters.houseNumber.raw || "",
       street: this._context.parameters.street.raw || "",
+      street2: this._context.parameters.street2.raw || "",
+      street3: this._context.parameters.street3.raw || "",
+      streetCombined: this._context.parameters.streetCombined.raw || "",
+      streetCombinedNoNumber:
+        this._context.parameters.streetCombinedNoNumber.raw || "",
       city: this._context.parameters.city.raw || "",
       state: this._context.parameters.state.raw || "",
       postalCode: this._context.parameters.postalCode.raw || "",
