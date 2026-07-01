@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <control namespace="LiminityControls" constructor="GoogleAddressAutocomplete" version="1.1.0" display-name-key="GoogleAddressAutocomplete" description-key="Google Address Autocomplete Control" control-type="standard">
+    <property name="address" display-name-key="Address" description-key="Full address" of-type="SingleLine.Text" usage="bound" required="true" />
+    <property name="houseNumber" display-name-key="House Number" description-key="House/Street number" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="street" display-name-key="Street" description-key="Street name (without number)" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="city" display-name-key="City" description-key="City" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="state" display-name-key="State" description-key="State/Province" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="postalCode" display-name-key="Postal Code" description-key="Postal/Zip Code" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="country" display-name-key="Country" description-key="Country" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="countryCode" display-name-key="Country Code" description-key="Country ISO 3166-1 alpha-2 code (e.g. IN, FR)" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="apiKey" display-name-key="API Key" description-key="Google Maps API Key" of-type="SingleLine.Text" usage="input" required="true" />
+    <property name="placeholder" display-name-key="Placeholder" description-key="Placeholder text for the input" of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="countryRestriction" display-name-key="Country Restriction" description-key="Limit results to a specific country (comma-separated country codes)" of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="latitude" display-name-key="Latitude" description-key="Latitude coordinate" of-type="Decimal" usage="bound" required="false" />
+    <property name="longitude" display-name-key="Longitude" description-key="Longitude coordinate" of-type="Decimal" usage="bound" required="false" />
+    <resources>
+      <code path="index.ts" order="1"/>
+    </resources>
+  </control>
+</manifest>

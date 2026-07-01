@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(dotnet --version)",
+      "Bash(pac help *)",
+      "Bash(pac)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(dotnet tool *)"
+    ]
+  }
+}
