@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <manifest>
-  <control namespace="LiminityControls" constructor="GoogleAddressAutocomplete" version="1.2.0" display-name-key="GoogleAddressAutocomplete" description-key="Google Address Autocomplete Control" control-type="standard" api-version="1.3.15">
+  <control namespace="LiminityControls" constructor="GoogleAddressAutocomplete" version="1.4.0" display-name-key="GoogleAddressAutocomplete" description-key="Google Address Autocomplete Control" control-type="standard" api-version="1.3.15">
     <property name="address" display-name-key="Address" description-key="Full address" of-type="SingleLine.Text" usage="bound" required="true"/>
     <property name="houseNumber" display-name-key="House Number" description-key="House/Street number" of-type="SingleLine.Text" usage="bound" required="false"/>
     <property name="street" display-name-key="Street" description-key="Street name (without number)" of-type="SingleLine.Text" usage="bound" required="false"/>
+    <property name="street2" display-name-key="Street 2" description-key="Unit / apartment / suite (subpremise)" of-type="SingleLine.Text" usage="bound" required="false"/>
+    <property name="street3" display-name-key="Street 3" description-key="Building / neighborhood / sublocality" of-type="SingleLine.Text" usage="bound" required="false"/>
+    <property name="streetCombined" display-name-key="Street (Combined)" description-key="Full street line: house number, street, and all additional street parts merged into one field" of-type="SingleLine.Text" usage="bound" required="false"/>
+    <property name="streetCombinedNoNumber" display-name-key="Street (Combined, No Number)" description-key="Street line without the house number: street and all additional street parts merged into one field" of-type="SingleLine.Text" usage="bound" required="false"/>
     <property name="city" display-name-key="City" description-key="City" of-type="SingleLine.Text" usage="bound" required="false"/>
     <property name="state" display-name-key="State" description-key="State/Province" of-type="SingleLine.Text" usage="bound" required="false"/>
     <property name="postalCode" display-name-key="Postal Code" description-key="Postal/Zip Code" of-type="SingleLine.Text" usage="bound" required="false"/>
