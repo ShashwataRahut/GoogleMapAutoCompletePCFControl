@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest>
-  <control namespace="LiminityControls" constructor="GoogleAddressAutocomplete" version="1.1.0" display-name-key="GoogleAddressAutocomplete" description-key="Google Address Autocomplete Control" control-type="standard">
+  <control namespace="LiminityControls" constructor="GoogleAddressAutocomplete" version="1.2.0" display-name-key="GoogleAddressAutocomplete" description-key="Google Address Autocomplete Control" control-type="standard">
     <property name="address" display-name-key="Address" description-key="Full address" of-type="SingleLine.Text" usage="bound" required="true" />
     <property name="houseNumber" display-name-key="House Number" description-key="House/Street number" of-type="SingleLine.Text" usage="bound" required="false" />
     <property name="street" display-name-key="Street" description-key="Street name (without number)" of-type="SingleLine.Text" usage="bound" required="false" />
@@ -12,8 +12,13 @@
     <property name="apiKey" display-name-key="API Key" description-key="Google Maps API Key" of-type="SingleLine.Text" usage="input" required="true" />
     <property name="placeholder" display-name-key="Placeholder" description-key="Placeholder text for the input" of-type="SingleLine.Text" usage="input" required="false" />
     <property name="countryRestriction" display-name-key="Country Restriction" description-key="Limit results to a specific country (comma-separated country codes)" of-type="SingleLine.Text" usage="input" required="false" />
-    <property name="latitude" display-name-key="Latitude" description-key="Latitude coordinate" of-type="Decimal" usage="bound" required="false" />
-    <property name="longitude" display-name-key="Longitude" description-key="Longitude coordinate" of-type="Decimal" usage="bound" required="false" />
+    <property name="latitude" display-name-key="Latitude" description-key="Latitude coordinate" of-type-group="coordinate" usage="bound" required="false" />
+    <property name="longitude" display-name-key="Longitude" description-key="Longitude coordinate" of-type-group="coordinate" usage="bound" required="false" />
+    <type-group name="coordinate">
+      <type>FP</type>
+      <type>Decimal</type>
+      <type>Currency</type>
+    </type-group>
     <resources>
       <code path="index.ts" order="1"/>
     </resources>
