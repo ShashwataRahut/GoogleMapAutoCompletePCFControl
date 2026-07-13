@@ -72,7 +72,95 @@ export class GoogleAddressAutocomplete
     // Add event listener for input changes (will bubble from inner input)
     this._fluentInput.addEventListener("input", this.onFluentInputChange);
 
-    this.loadGoogleMapsScript();
+    // Resolve the Google Maps API key from the configured Environment Variable
+    // (async), then load the Maps script.
+    this.resolveApiKey()
+      .then((apiKey) => {
+        if (!apiKey) {
+          console.error(
+            "Google Maps API key could not be resolved from the environment variable or fallback."
+          );
+          return;
+        }
+        this.loadGoogleMapsScript(apiKey);
+      })
+      .catch((err) => {
+        console.error("Error resolving Google Maps API key:", err);
+      });
+  }
+
+  /**
+   * Resolves the Google Maps API key. Preference order:
+   *   1. Environment Variable current value (environmentvariablevalue)
+   *   2. Environment Variable definition default (environmentvariabledefinition)
+   *   3. Optional literal apiKey input (fallback only)
+   */
+  private async resolveApiKey(): Promise<string> {
+    const envVarName =
+      this._context.parameters.apiKeyEnvVariableName?.raw?.trim() || "";
+    const fallbackKey = this._context.parameters.apiKey?.raw?.trim() || "";
+
+    if (envVarName) {
+      try {
+        const resolved = await this.getEnvironmentVariable(envVarName);
+        if (resolved) {
+          return resolved;
+        }
+        console.warn(
+          `Environment variable '${envVarName}' resolved to an empty value; using fallback API key if provided.`
+        );
+      } catch (err) {
+        console.error(
+          `Failed to read environment variable '${envVarName}':`,
+          err
+        );
+      }
+    }
+
+    return fallbackKey;
+  }
+
+  /**
+   * Reads an Environment Variable by its schema name via the Web API.
+   * Returns the current value if one exists, otherwise the definition's
+   * default value, otherwise an empty string.
+   */
+  private async getEnvironmentVariable(schemaName: string): Promise<string> {
+    // Escape single quotes for the OData filter.
+    const safeName = schemaName.replace(/'/g, "''");
+
+    // 1. Look up the definition (id + default value).
+    const defResult = await this._context.webAPI.retrieveMultipleRecords(
+      "environmentvariabledefinition",
+      `?$select=environmentvariabledefinitionid,defaultvalue&$filter=schemaname eq '${safeName}'`
+    );
+
+    if (!defResult.entities || defResult.entities.length === 0) {
+      console.warn(
+        `No Environment Variable Definition found for schema name '${schemaName}'.`
+      );
+      return "";
+    }
+
+    const definition = defResult.entities[0];
+    const definitionId = definition.environmentvariabledefinitionid as string;
+    const defaultValue = (definition.defaultvalue as string) || "";
+
+    // 2. Look up the current value for that definition (if any).
+    const valueResult = await this._context.webAPI.retrieveMultipleRecords(
+      "environmentvariablevalue",
+      `?$select=value&$filter=_environmentvariabledefinitionid_value eq ${definitionId}`
+    );
+
+    if (valueResult.entities && valueResult.entities.length > 0) {
+      const currentValue = (valueResult.entities[0].value as string) || "";
+      if (currentValue) {
+        return currentValue;
+      }
+    }
+
+    // 3. Fall back to the definition's default value.
+    return defaultValue;
   }
 
   // Handler for FluentTextField input changes
@@ -86,9 +174,9 @@ export class GoogleAddressAutocomplete
     // this._notifyOutputChanged();
   };
 
-  private loadGoogleMapsScript(): void {
+  private loadGoogleMapsScript(apiKey: string): void {
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${this._context.parameters.apiKey.raw}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
     script.async = true;
     script.defer = true;
     script.onload = () => this.initAutocomplete();
